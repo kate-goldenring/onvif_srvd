@@ -133,7 +133,25 @@ int DeviceBindingService::SetSystemFactoryDefault(_tds__SetSystemFactoryDefault 
 
 int DeviceBindingService::UpgradeSystemFirmware(_tds__UpgradeSystemFirmware *tds__UpgradeSystemFirmware, _tds__UpgradeSystemFirmwareResponse &tds__UpgradeSystemFirmwareResponse)
 {
-    SOAP_EMPTY_HANDLER(tds__UpgradeSystemFirmware, "Device");
+    DEBUG_MSG("Device: %s\n", __FUNCTION__);
+    // Inspect request
+    // TODO: Figure out how to parse the included firmware of type xop__Include
+    // Always returns -1
+    // int data = soap_read_tt__AttachmentData(this->soap, tds__UpgradeSystemFirmware->Firmware);
+    // tt__AttachmentData * new_data = soap_new_tt__AttachmentData(this->soap);
+    // int data = soap_read_tt__AttachmentData(this->soap, new_data);
+
+    // For demo purposes, assuming that the requested firmware version is specified as the content type
+    char * version = tds__UpgradeSystemFirmware->Firmware->xmime__contentType;
+
+    DEBUG_MSG("Attached data is : %s\n", include);
+    // Build response
+    std::string msg = "Upgrade completed";
+    tds__UpgradeSystemFirmwareResponse.Message = &msg;
+    char* c = const_cast<char*>(msg.c_str());
+    std::cout << c;
+    DEBUG_MSG("Mesage response is: %s\n", c);
+    return SOAP_OK;
 }
 
 
