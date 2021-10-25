@@ -13,6 +13,8 @@
 #include "ServiceContext.h"
 #include "smacros.h"
 
+#include "onvif_firmware_update_client.h" 
+
 
 
 
@@ -144,7 +146,9 @@ int DeviceBindingService::UpgradeSystemFirmware(_tds__UpgradeSystemFirmware *tds
     // For demo purposes, assuming that the requested firmware version is specified as the content type
     char * version = tds__UpgradeSystemFirmware->Firmware->xmime__contentType;
 
-    DEBUG_MSG("Attached data is : %s\n", include);
+    DEBUG_MSG("Requested version is : %s\n", version);
+    std::string version_str(version);
+    std::string resp = requestFirmwareUpgrade(version_str);
     // Build response
     std::string msg = "Upgrade completed";
     tds__UpgradeSystemFirmwareResponse.Message = &msg;

@@ -39,7 +39,8 @@ generated/
 *.log
 *.depend
 
-
+# cmake build
+cmake/build
 
 # Files that we don't want to ignore
 !.gitignore

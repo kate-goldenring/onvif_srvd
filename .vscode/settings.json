@@ -56,6 +56,9 @@
         "iostream": "cpp",
         "mutex": "cpp",
         "thread": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "cstring": "cpp",
+        "bitset": "cpp",
+        "list": "cpp"
     }
 }

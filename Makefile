@@ -91,6 +91,7 @@ SOURCES  = $(COMMON_DIR)/daemon.c                 \
            $(COMMON_DIR)/ServiceDevice.cpp        \
            $(COMMON_DIR)/ServiceMedia.cpp         \
            $(COMMON_DIR)/ServicePTZ.cpp           \
+           $(COMMON_DIR)/onvif_firmware_update_client.cpp \
            $(GENERATED_DIR)/soapC.cpp             \
            $(SOAP_SRC)                            \
            $(SOAP_SERVICE_SRC)                    \
