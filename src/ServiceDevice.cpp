@@ -148,7 +148,8 @@ int DeviceBindingService::UpgradeSystemFirmware(_tds__UpgradeSystemFirmware *tds
 
     DEBUG_MSG("Requested version is : %s\n", version);
     std::string version_str(version);
-    std::string resp = requestFirmwareUpgrade(version_str);
+    FirmwareUpdateClient client = FirmwareUpdateClient();
+    bool resp = client.RequestFirmwareUpdate(version_str);
     // Build response
     std::string msg = "Upgrade completed";
     tds__UpgradeSystemFirmwareResponse.Message = &msg;

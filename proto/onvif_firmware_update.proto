@@ -10,7 +10,7 @@ service FirmwareUpdate {
 // The request message containing the user's name.
 message UpdateFirmwareRequest {
   string version = 1;
-  optional int32 reboot_time_secs = 2;
+  int32 reboot_time_secs = 2;
 
 }
 

@@ -6,10 +6,10 @@
 #include <string>
 
 #include <grpc/grpc.h>
-#include <grpcpp/channel.h>
-#include <grpcpp/client_context.h>
-#include <grpcpp/create_channel.h>
-#include <grpcpp/security/credentials.h>
+#include <grpc++/channel.h>
+#include <grpc++/client_context.h>
+#include <grpc++/create_channel.h>
+#include <grpc++/security/credentials.h>
 // #ifdef BAZEL_BUILD
 // #include "examples/protos/onvif_firmware_update.grpc.pb.h"
 // #else
@@ -31,8 +31,8 @@ class FirmwareUpdateClient {
     public:
         FirmwareUpdateClient(std::shared_ptr<grpc::Channel> channel);
         FirmwareUpdateClient();
+        bool RequestFirmwareUpdate(std::string& requested_version);
     private: 
-        bool RequestFirmwareUpdate(std::string& requested_version, std::string& response_version);
         const float kCoordFactor_ = 10000000.0;
         std::unique_ptr<FirmwareUpdate::Stub> stub_;
 };

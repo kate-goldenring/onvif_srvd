@@ -42,9 +42,6 @@ CXXFLAGS         += -std=c++11 -O2  -Wall  -pipe
 CXX              ?= g++
 
 
-
-
-
 # To build a daemon with WS-Security support,
 # call make with the WSSE_ON=1 parameter
 # example:
@@ -87,20 +84,15 @@ SOAP_SERVICE_SRC = $(GENERATED_DIR)/soapDeviceBindingService.cpp \
 SOURCES  = $(COMMON_DIR)/daemon.c                 \
            $(COMMON_DIR)/$(DAEMON_NAME).cpp       \
            $(COMMON_DIR)/eth_dev_param.cpp        \
+           $(COMMON_DIR)/onvif_firmware_update_client.cpp \
            $(COMMON_DIR)/ServiceContext.cpp       \
            $(COMMON_DIR)/ServiceDevice.cpp        \
            $(COMMON_DIR)/ServiceMedia.cpp         \
            $(COMMON_DIR)/ServicePTZ.cpp           \
-           $(COMMON_DIR)/onvif_firmware_update_client.cpp \
            $(GENERATED_DIR)/soapC.cpp             \
            $(SOAP_SRC)                            \
            $(SOAP_SERVICE_SRC)                    \
            $(WSSE_SOURCES)
-
-
-
-
-
 
 OBJECTS  := $(patsubst %.c,  %.o, $(SOURCES) )
 OBJECTS  := $(patsubst %.cpp,%.o, $(OBJECTS) )

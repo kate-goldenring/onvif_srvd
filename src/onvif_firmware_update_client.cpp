@@ -7,10 +7,10 @@
 
 #include "smacros.h"
 #include <grpc/grpc.h>
-#include <grpcpp/channel.h>
-#include <grpcpp/client_context.h>
-#include <grpcpp/create_channel.h>
-#include <grpcpp/security/credentials.h>
+#include <grpc++/channel.h>
+#include <grpc++/client_context.h>
+#include <grpc++/create_channel.h>
+#include <grpc++/security/credentials.h>
 // #ifdef BAZEL_BUILD
 // #include "examples/protos/onvif_firmware_update.grpc.pb.h"
 // #else
@@ -28,7 +28,9 @@ using grpc::Status;
 using onvif_firmware_update::FirmwareUpdate;
 using onvif_firmware_update::UpdateFirmwareRequest;
 using onvif_firmware_update::UpdateFirmwareReply;
-
+// FirmwareUpdateClient::FirmwareUpdateClient(std::shared_ptr<Channel> channel) {
+//   stub_ = FirmwareUpdate::NewStub(channel);
+// }
 FirmwareUpdateClient::FirmwareUpdateClient(std::shared_ptr<Channel> channel)
       : stub_(FirmwareUpdate::NewStub(channel)) {}
 FirmwareUpdateClient::FirmwareUpdateClient()
@@ -36,7 +38,7 @@ FirmwareUpdateClient::FirmwareUpdateClient()
                           grpc::InsecureChannelCredentials()))) {}
 
 // TODO: return std::string and throw exceptions
-bool FirmwareUpdateClient::RequestFirmwareUpdate(std::string& requested_version, std::string& response_version) {
+bool FirmwareUpdateClient::RequestFirmwareUpdate(std::string& requested_version) {
     ClientContext context;
     int reboot_time_secs = 0;
     UpdateFirmwareRequest request;
