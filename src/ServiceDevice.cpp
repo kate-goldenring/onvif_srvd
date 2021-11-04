@@ -12,7 +12,7 @@
 #include "soapDeviceBindingService.h"
 #include "ServiceContext.h"
 #include "smacros.h"
-
+#include <grpc++/channel.h>
 #include "onvif_firmware_update_client.h" 
 
 
@@ -146,16 +146,17 @@ int DeviceBindingService::UpgradeSystemFirmware(_tds__UpgradeSystemFirmware *tds
     // For demo purposes, assuming that the requested firmware version is specified as the content type
     char * version = tds__UpgradeSystemFirmware->Firmware->xmime__contentType;
 
-    DEBUG_MSG("Requested version is : %s\n", version);
-    std::string version_str(version);
-    FirmwareUpdateClient client = FirmwareUpdateClient();
-    bool resp = client.RequestFirmwareUpdate(version_str);
+    DEBUG_MSG("Requested version is ..b. : %s\n", version);
+    std::shared_ptr<Channel> channel = grpc::CreateChannel("10.137.184.218:6052",
+                          grpc::InsecureChannelCredentials());
+    // FirmwareUpdateClient client(channel);
+    FirmwareUpdateClient client = FirmwareUpdateClient(channel);
+    std::string resp = client.RequestFirmwareUpdate(version);
     // Build response
-    std::string msg = "Upgrade completed";
-    tds__UpgradeSystemFirmwareResponse.Message = &msg;
-    char* c = const_cast<char*>(msg.c_str());
+    tds__UpgradeSystemFirmwareResponse.Message = &resp;
+    char* c = const_cast<char*>(resp.c_str());
     std::cout << c;
-    DEBUG_MSG("Mesage response is: %s\n", c);
+    DEBUG_MSG("Message response is: %s\n", c);
     return SOAP_OK;
 }
 

@@ -60,6 +60,17 @@ If before make was done without WS-Security support, **must cleanup** (We need t
 make distclean
 ```
 
+##### For FW Update
+Install gRPC and protobuf dependencies
+```sh
+sudo apt-get install libgrpc++-dev
+sudo apt install protobuf-compiler-grpc
+```
+Auto generate the gRPC code defined in the `proto/onvif_firmware_update.proto` proto file:
+```sh
+protoc -I ./proto --grpc_out=./src --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./proto/onvif_firmware_update.proto
+protoc -I ./proto --cpp_out=./src ./proto/onvif_firmware_update.proto
+```
 
 
 ## Usage

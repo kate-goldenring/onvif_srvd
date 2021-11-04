@@ -28,47 +28,40 @@ using grpc::Status;
 using onvif_firmware_update::FirmwareUpdate;
 using onvif_firmware_update::UpdateFirmwareRequest;
 using onvif_firmware_update::UpdateFirmwareReply;
-// FirmwareUpdateClient::FirmwareUpdateClient(std::shared_ptr<Channel> channel) {
-//   stub_ = FirmwareUpdate::NewStub(channel);
-// }
-FirmwareUpdateClient::FirmwareUpdateClient(std::shared_ptr<Channel> channel)
-      : stub_(FirmwareUpdate::NewStub(channel)) {}
-FirmwareUpdateClient::FirmwareUpdateClient()
-      : stub_(FirmwareUpdate::NewStub(grpc::CreateChannel("localhost:6052",
-                          grpc::InsecureChannelCredentials()))) {}
+
+const int DEFAULT_TIMEOUT = 30;
+
+FirmwareUpdateClient::FirmwareUpdateClient(std::shared_ptr<Channel> channel) {
+  DEBUG_MSG("Constructing FirmwareUpdateClient\n");
+  stub_ = FirmwareUpdate::NewStub(channel);
+  DEBUG_MSG("Constructed FirmwareUpdateClient\n");
+}
+FirmwareUpdateClient::FirmwareUpdateClient() {
+  DEBUG_MSG("Constructing FirmwareUpdateClient\n");
+  std::string target_str = "localhost:6052";
+  stub_ = FirmwareUpdate::NewStub(grpc::CreateChannel("10.137.184.218:6052",
+                          grpc::InsecureChannelCredentials()));
+}
 
 // TODO: return std::string and throw exceptions
-bool FirmwareUpdateClient::RequestFirmwareUpdate(std::string& requested_version) {
+std::string FirmwareUpdateClient::RequestFirmwareUpdate(char * requested_version) {
+    DEBUG_MSG("RequestFirmwareUpdate called with version : %s\n", requested_version);
     ClientContext context;
-    int reboot_time_secs = 0;
     UpdateFirmwareRequest request;
-    request.set_reboot_time_secs(reboot_time_secs);
+    request.set_reboot_time_secs(DEFAULT_TIMEOUT);
     request.set_version(requested_version);
     UpdateFirmwareReply reply;
     Status status = stub_->UpdateFirmware(&context, request, &reply);
     if (status.ok()) {
-      DEBUG_MSG("Successfull upgraded to version : %s\n", reply.version());
-      return true;
+      char* reply_char = const_cast<char*>(reply.version().c_str());
+      std::cout << reply_char;
+      DEBUG_MSG("Successfull upgraded to version : %s\n", reply_char);
+      return reply.version();
     }
     else {
-       DEBUG_MSG("UpdateFirmware rpc failed.");
+      DEBUG_MSG("UpdateFirmware rpc failed.\n");
       std::cout << "UpdateFirmware rpc failed." << std::endl;
-      return false;
+      throw std::invalid_argument( "UpdateFirmware rpc failed." );
     }
 }
-  
-const float kCoordFactor_ = 10000000.0;
-std::unique_ptr<FirmwareUpdate::Stub> stub_;
 
-
-
-// std::string requestFirmwareUpgrade(std::string& requested_version) {
-//   FirmwareUpdateClient client(
-//       grpc::CreateChannel("localhost:6052",
-//                           grpc::InsecureChannelCredentials()));                          
-//   if client.RequestFirmwareUpdate(requested_version) {
-//     return requested_version;
-//   } else {
-//     throw std::runtime_error("A problem occurred when upgrading firmware");
-//   }
-// }

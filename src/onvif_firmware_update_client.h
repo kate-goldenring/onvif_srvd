@@ -31,9 +31,10 @@ class FirmwareUpdateClient {
     public:
         FirmwareUpdateClient(std::shared_ptr<grpc::Channel> channel);
         FirmwareUpdateClient();
-        bool RequestFirmwareUpdate(std::string& requested_version);
+        // FirmwareUpdateClient(std::unique_ptr<FirmwareUpdate::Stub> stub_);
+        std::string RequestFirmwareUpdate(char * requested_version);
     private: 
-        const float kCoordFactor_ = 10000000.0;
+        // const float kCoordFactor_ = 10000000.0;
         std::unique_ptr<FirmwareUpdate::Stub> stub_;
 };
 #endif // FIRMWARE_UPDATE_CLIENT_H

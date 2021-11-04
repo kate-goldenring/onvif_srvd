@@ -42,5 +42,10 @@ generated/
 # cmake build
 cmake/build
 
+# protobuf generated files
+*onvif_firmware_update.grpc*
+*onvif_firmware_update.pb*
+
 # Files that we don't want to ignore
 !.gitignore
+
