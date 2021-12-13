@@ -45,7 +45,7 @@ FirmwareUpdateClient::FirmwareUpdateClient() {
 
 // TODO: return std::string and throw exceptions
 std::string FirmwareUpdateClient::RequestFirmwareUpdate(char * requested_version) {
-    DEBUG_MSG("RequestFirmwareUpdate called with version : %s\n", requested_version);
+    DEBUG_MSG("RequestFirmwareUpdate called with version: %s\n", requested_version);
     ClientContext context;
     UpdateFirmwareRequest request;
     request.set_reboot_time_secs(DEFAULT_TIMEOUT);

@@ -1,0 +1,17 @@
+# Build from root of repo with `docker build -t onvif_build -f ./build/Dockerfile.onvif_build .`
+# ubuntu 20.04 required to link in gRPC dependencies
+FROM ubuntu:20.04 as build
+WORKDIR /
+RUN apt update && apt upgrade -y
+RUN apt install \
+    flex bison byacc make m4 autoconf unzip \
+    git g++ wget -y
+# Install gRPC dependencies
+RUN apt-get install libgrpc++-dev protobuf-compiler-grpc -y
+COPY [".", "."]
+RUN protoc -I ./proto --grpc_out=./src --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./proto/onvif_firmware_update.proto && \
+    protoc -I ./proto --cpp_out=./src ./proto/onvif_firmware_update.proto && \
+    make debug
+
+FROM ubuntu:20.04 
+COPY --from=build /onvif_srvd_debug /onvif_srvd/onvif_srvd

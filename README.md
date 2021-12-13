@@ -63,8 +63,7 @@ make distclean
 ##### For FW Update
 Install gRPC and protobuf dependencies
 ```sh
-sudo apt-get install libgrpc++-dev
-sudo apt install protobuf-compiler-grpc
+sudo apt-get install libgrpc++-dev protobuf-compiler-grpc
 ```
 Auto generate the gRPC code defined in the `proto/onvif_firmware_update.proto` proto file:
 ```sh

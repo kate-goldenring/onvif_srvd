@@ -14,6 +14,7 @@
 #include "smacros.h"
 #include <grpc++/channel.h>
 #include "onvif_firmware_update_client.h" 
+#include <sstream>
 
 
 
@@ -137,21 +138,35 @@ int DeviceBindingService::UpgradeSystemFirmware(_tds__UpgradeSystemFirmware *tds
 {
     DEBUG_MSG("Device: %s\n", __FUNCTION__);
     // Inspect request
-    // TODO: Figure out how to parse the included firmware of type xop__Include
-    // Always returns -1
-    // int data = soap_read_tt__AttachmentData(this->soap, tds__UpgradeSystemFirmware->Firmware);
-    // tt__AttachmentData * new_data = soap_new_tt__AttachmentData(this->soap);
-    // int data = soap_read_tt__AttachmentData(this->soap, new_data);
+    // TODO: Parse firmware of type xop__Include
+    // char * version = tds__UpgradeSystemFirmware->Firmware->xop__Include->type;
+    // Get current version, parse as double and add 1.0 to it.
+    // Get update service IP address and port 
+    const char* ip_p = std::getenv("UPGRADE_SERVICE_IP");
+    std::string ip = (ip_p) ? std::string(ip_p) : "localhost";
+    const char* port_p = std::getenv("UPGRADE_SERVICE_PORT");
+    std::string port = (port_p) ? std::string(port_p) : "6052";
+    std::string addr = ip + ':' + port;
+    DEBUG_MSG("Connecting to upgrade service at: %s\n", const_cast<char*>(addr.c_str()));
+    
+    // Get current firmware version and increase it by 1.
+    ServiceContext* ctx = (ServiceContext*)this->soap->user;
+    std::string current_version_s = ctx->firmware_version;
+    char* current_version_c = const_cast<char*>(current_version_s.c_str());
+    DEBUG_MSG("Current firmware version: %s\n", current_version_c);
+    double new_version_d = atof(current_version_c) + 1.0;
+    
+    // Cast with buffer to truncate any trailing 0s
+    std::ostringstream new_version_os; 
+    new_version_os<<new_version_d;
+    char* new_version = const_cast<char*>(new_version_os.str().c_str());
+    DEBUG_MSG("Requesting firmware version: %s\n", new_version);
 
-    // For demo purposes, assuming that the requested firmware version is specified as the content type
-    char * version = tds__UpgradeSystemFirmware->Firmware->xmime__contentType;
-
-    DEBUG_MSG("Requested version is ..b. : %s\n", version);
-    std::shared_ptr<Channel> channel = grpc::CreateChannel("10.137.184.218:6052",
+    std::shared_ptr<Channel> channel = grpc::CreateChannel(addr,
                           grpc::InsecureChannelCredentials());
-    // FirmwareUpdateClient client(channel);
     FirmwareUpdateClient client = FirmwareUpdateClient(channel);
-    std::string resp = client.RequestFirmwareUpdate(version);
+    std::string resp = client.RequestFirmwareUpdate(new_version);
+    
     // Build response
     tds__UpgradeSystemFirmwareResponse.Message = &resp;
     char* c = const_cast<char*>(resp.c_str());
